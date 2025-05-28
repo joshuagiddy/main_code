@@ -1,5 +1,6 @@
 """"Racing_game_v3
-This is now adding movement to the ."""
+This is now adding movement to the main car which the user can now control.
+ It makes sure that the car doesn't leave the screen but there are no obsticales yet  ."""
 
 
 
