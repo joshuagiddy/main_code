@@ -1,5 +1,8 @@
-""""Racing_game_v2
-This is now adding a backround as well as the main car which the user will control."""
+""""Racing_game_v3
+This is now adding movement to the ."""
+
+
+
 import pygame
 pygame.init()
 WIDTH, HEIGHT = 500, 600
@@ -8,6 +11,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 # Setting the title
 pygame.display.set_caption("Car Racing")
 clock = pygame.time.Clock()
+
 # Function to load and scale the image
 def load_image(filename, size=None):
     # Loading image
@@ -26,6 +30,9 @@ player_image = load_image("car_1.png", car_size)
 # Set the initial position of the player car
 player_x = WIDTH // 2 - car_size[0] // 2
 player_y = HEIGHT - 140
+# Set the speed of the car movement
+player_speed = 5
+
 # Game loop control variable
 running = True
 
@@ -35,14 +42,30 @@ while running:
     screen.blit(background_image, (0, 0))
     # Start the player car image at its position
     screen.blit(player_image, (player_x, player_y))
+
     # If user closes program
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
+    # Get which keys are being pressed
+    keys = pygame.key.get_pressed()
+    # Move left if LEFT key is pressed and car is not off screen
+    if keys[pygame.K_LEFT] and player_x > 0:
+        player_x -= player_speed
+    # Move right if RIGHT key is pressed and car is not off screen
+    if keys[pygame.K_RIGHT] and player_x + car_size[0] < WIDTH:
+        player_x += player_speed
+    # Move up if UP key is pressed and car is not off screen
+    if keys[pygame.K_UP] and player_y > 0:
+        player_y -= player_speed
+    # Move down if DOWN key is pressed and car is not off screen
+    if keys[pygame.K_DOWN] and player_y + car_size[1] < HEIGHT:
+        player_y += player_speed
+
     # Update the game screen
     pygame.display.flip()
     clock.tick(60)
 
-
 pygame.quit()
+

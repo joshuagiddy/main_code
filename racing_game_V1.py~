@@ -6,7 +6,7 @@ pygame.init()
 WIDTH, HEIGHT = 500, 600
 # Create the game screen
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-# Setting the title
+# Set the window title
 pygame.display.set_caption("Car Racing")
 clock = pygame.time.Clock()
 running = True
