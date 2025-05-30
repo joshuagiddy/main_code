@@ -1,6 +1,6 @@
-""""Racing_game_v7
-This version adds a high score system that tracks the best score achieved during the session.
-The high score is displayed on the screen and does not reset when the game restarts."""
+""""Racing_game_v8
+This version increases difficulty over time by making the enemy car move faster
+as the player's score increases. The speed increases every 5 points earned."""
 
 import pygame
 import random
@@ -36,10 +36,10 @@ player_y = HEIGHT - 140
 # Set the speed of the car movement
 player_speed = 5
 
-# Set the initial position of the enemy car (random x, above screen)
+# Set the initial position of the enemy car
 enemy_x = random.randint(50, WIDTH - 100)
 enemy_y = -100  # Start above the screen
-# Set the speed of the enemy car
+# Set the initial speed of the enemy car
 enemy_speed = 5
 
 # Set up font for text
@@ -80,36 +80,35 @@ while running:
     if not game_over:
         # Get which keys are being pressed
         keys = pygame.key.get_pressed()
-        # Move left if LEFT key is pressed
         if keys[pygame.K_LEFT] and player_x > 0:
             player_x -= player_speed
-        # Move right if RIGHT key is pressed
         if keys[pygame.K_RIGHT] and player_x + car_size[0] < WIDTH:
             player_x += player_speed
-        # Move up if UP key is pressed
         if keys[pygame.K_UP] and player_y > 0:
             player_y -= player_speed
-        # Move down if DOWN key is pressed
         if keys[pygame.K_DOWN] and player_y + car_size[1] < HEIGHT:
             player_y += player_speed
 
         # Move the enemy car downward
         enemy_y += enemy_speed
 
-        # If the enemy moves off the screen, reset it to the top at a new random x position
+        # If the enemy moves off screen, reset it and increase difficulty
         if enemy_y > HEIGHT:
             enemy_y = -100
             enemy_x = random.randint(50, WIDTH - 100)
-            score += 1  # Add 1 to score when enemy is successfully dodged
+            score += 1  # Add 1 to score
 
-        # Creating rectangles for collision detection
+            # Increase difficulty every 5 points
+            if score % 5 == 0:
+                enemy_speed += 1
+
+        # Create rectangles for collision detection
         player_rect = pygame.Rect(player_x, player_y, car_size[0], car_size[1])
         enemy_rect = pygame.Rect(enemy_x, enemy_y, car_size[0], car_size[1])
 
-        # Checking if player collides with enemy
+        # Collision detection
         if player_rect.colliderect(enemy_rect):
-            game_over = True  # Set game over flag to True
-            # Update the high score if the current score is higher
+            game_over = True
             if score > high_score:
                 high_score = score
 
@@ -121,9 +120,9 @@ while running:
         # Restarts game by pressing R
         keys = pygame.key.get_pressed()
         if keys[pygame.K_r]:
-            # Resetting the game
             game_over = False
             score = 0
+            enemy_speed = 5  # Reset enemy speed
             player_x = WIDTH // 2 - car_size[0] // 2
             player_y = HEIGHT - 140
             enemy_x = random.randint(50, WIDTH - 100)
