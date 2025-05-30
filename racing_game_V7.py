@@ -1,9 +1,9 @@
-""""Racing_game_v5
- ,this version adds collision detection so the user has to dodge the enemy or the user loses.
-It also adds a game over screen if the user crashes."""
+""""Racing_game_v7
+This version adds a high score system that tracks the best score achieved during the session.
+The high score is displayed on the screen and does not reset when the game restarts."""
 
 import pygame
-import random  # Import random to choose random positions and speeds
+import random
 pygame.init()
 WIDTH, HEIGHT = 500, 600
 # Create the game screen
@@ -44,8 +44,14 @@ enemy_speed = 5
 
 # Set up font for text
 font = pygame.font.SysFont("Arial", 36)
+small_font = pygame.font.SysFont("Arial", 28)
+
 # Track whether the game is over
 game_over = False
+# Track the player's score
+score = 0
+# Track the highest score
+high_score = 0
 
 # Game loop control variable
 running = True
@@ -58,6 +64,12 @@ while running:
     screen.blit(player_image, (player_x, player_y))
     # Start the enemy car image at its position
     screen.blit(enemy_image, (enemy_x, enemy_y))
+
+    # Display the current score and high score at the top
+    score_text = small_font.render(f"Score: {score}", True, (255, 255, 255))
+    high_score_text = small_font.render(f"High Score: {high_score}", True, (255, 255, 0))
+    screen.blit(score_text, (10, 10))
+    screen.blit(high_score_text, (10, 40))
 
     # If user closes program
     for event in pygame.event.get():
@@ -88,14 +100,18 @@ while running:
         if enemy_y > HEIGHT:
             enemy_y = -100
             enemy_x = random.randint(50, WIDTH - 100)
+            score += 1  # Add 1 to score when enemy is successfully dodged
 
-        # Createing rectangles for collision detection
+        # Creating rectangles for collision detection
         player_rect = pygame.Rect(player_x, player_y, car_size[0], car_size[1])
         enemy_rect = pygame.Rect(enemy_x, enemy_y, car_size[0], car_size[1])
 
         # Checking if player collides with enemy
         if player_rect.colliderect(enemy_rect):
             game_over = True  # Set game over flag to True
+            # Update the high score if the current score is higher
+            if score > high_score:
+                high_score = score
 
     else:
         # Show "Game Over" message when a crash happens
@@ -107,6 +123,7 @@ while running:
         if keys[pygame.K_r]:
             # Resetting the game
             game_over = False
+            score = 0
             player_x = WIDTH // 2 - car_size[0] // 2
             player_y = HEIGHT - 140
             enemy_x = random.randint(50, WIDTH - 100)
