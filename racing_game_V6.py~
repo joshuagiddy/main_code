@@ -1,6 +1,6 @@
-""""Racing_game_v8
-This version increases difficulty over time by making the enemy car move faster
-as the player's score increases. The speed increases every 5 points earned."""
+""""Racing_game_v6
+This version adds a score system so the user earns points when they dodge the enemy.
+The score is displayed on the screen."""
 
 import pygame
 import random
@@ -36,10 +36,10 @@ player_y = HEIGHT - 140
 # Set the speed of the car movement
 player_speed = 5
 
-# Set the initial position of the enemy car
+# Set the initial position of the enemy car (random x, above screen)
 enemy_x = random.randint(50, WIDTH - 100)
 enemy_y = -100  # Start above the screen
-# Set the initial speed of the enemy car
+# Set the speed of the enemy car
 enemy_speed = 5
 
 # Set up font for text
@@ -50,8 +50,6 @@ small_font = pygame.font.SysFont("Arial", 28)
 game_over = False
 # Track the player's score
 score = 0
-# Track the highest score
-high_score = 0
 
 # Game loop control variable
 running = True
@@ -65,11 +63,9 @@ while running:
     # Start the enemy car image at its position
     screen.blit(enemy_image, (enemy_x, enemy_y))
 
-    # Display the current score and high score at the top
+    # Display the score at the top of the screen
     score_text = small_font.render(f"Score: {score}", True, (255, 255, 255))
-    high_score_text = small_font.render(f"High Score: {high_score}", True, (255, 255, 0))
     screen.blit(score_text, (10, 10))
-    screen.blit(high_score_text, (10, 40))
 
     # If user closes program
     for event in pygame.event.get():
@@ -80,52 +76,50 @@ while running:
     if not game_over:
         # Get which keys are being pressed
         keys = pygame.key.get_pressed()
+        # Move left if LEFT key is pressed
         if keys[pygame.K_LEFT] and player_x > 0:
             player_x -= player_speed
+        # Move right if RIGHT key is pressed
         if keys[pygame.K_RIGHT] and player_x + car_size[0] < WIDTH:
             player_x += player_speed
+        # Move up if UP key is pressed
         if keys[pygame.K_UP] and player_y > 0:
             player_y -= player_speed
+        # Move down if DOWN key is pressed
         if keys[pygame.K_DOWN] and player_y + car_size[1] < HEIGHT:
             player_y += player_speed
 
         # Move the enemy car downward
         enemy_y += enemy_speed
 
-        # If the enemy moves off screen, reset it and increase difficulty
+        # If the enemy moves off the screen, reset it to the top at a new random x position
         if enemy_y > HEIGHT:
             enemy_y = -100
             enemy_x = random.randint(50, WIDTH - 100)
-            score += 1  # Add 1 to score
+            score += 1  # Add 1 to score when enemy is successfully dodged
 
-            # Increase difficulty every 5 points
-            if score % 5 == 0:
-                enemy_speed += 1
-
-        # Create rectangles for collision detection
+        # Creating rectangles for collision detection
         player_rect = pygame.Rect(player_x, player_y, car_size[0], car_size[1])
         enemy_rect = pygame.Rect(enemy_x, enemy_y, car_size[0], car_size[1])
 
-        # Collision detection
+        # Checking if player collides with enemy
         if player_rect.colliderect(enemy_rect):
-            game_over = True
-            if score > high_score:
-                high_score = score
+            game_over = True  # Set game over flag to True
 
     else:
         # Show "Game Over" message when a crash happens
-        game_over_text = font.render("Game Over, Press R to Restart!", True, (255, 0, 0))
+        game_over_text = font.render("Game Over!", True, (255, 0, 0))
         screen.blit(game_over_text, (40, HEIGHT // 2))
-
-        # Restarts game by pressing R
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_r]:
-            # Resetting the game
-            game_over = False
-            player_x = WIDTH // 2 - car_size[0] // 2
-            player_y = HEIGHT - 140
-            enemy_x = random.randint(50, WIDTH - 100)
-            enemy_y = -100
+    # Restarts game by pressing R
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_r]:
+        # Resetting the game
+        game_over = False
+        score = 0
+        player_x = WIDTH // 2 - car_size[0] // 2
+        player_y = HEIGHT - 140
+        enemy_x = random.randint(50, WIDTH - 100)
+        enemy_y = -100
 
     # Update the game screen
     pygame.display.flip()
