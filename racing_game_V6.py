@@ -1,6 +1,6 @@
 """"Racing_game_v6
 This version adds a score system so the user earns points when they dodge the enemy.
-The score is displayed on the screen and resets when the game restarts."""
+The score is displayed on the screen."""
 
 import pygame
 import random
@@ -108,19 +108,18 @@ while running:
 
     else:
         # Show "Game Over" message when a crash happens
-        game_over_text = font.render("Game Over! Press R to Restart", True, (255, 0, 0))
+        game_over_text = font.render("Game Over, Press R to Restart!", True, (255, 0, 0))
         screen.blit(game_over_text, (40, HEIGHT // 2))
-
-        # Restarts game by pressing R
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_r]:
-            # Resetting the game
-            game_over = False
-            score = 0
-            player_x = WIDTH // 2 - car_size[0] // 2
-            player_y = HEIGHT - 140
-            enemy_x = random.randint(50, WIDTH - 100)
-            enemy_y = -100
+    # Restarts game by pressing R
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_r]:
+        # Resetting the game
+        game_over = False
+        score = 0
+        player_x = WIDTH // 2 - car_size[0] // 2
+        player_y = HEIGHT - 140
+        enemy_x = random.randint(50, WIDTH - 100)
+        enemy_y = -100
 
     # Update the game screen
     pygame.display.flip()

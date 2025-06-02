@@ -1,5 +1,5 @@
 """"Racing_game_v2
-This is now adding a backround as well as the main car which the user will control."""
+This is now adding a backround as well as the main car which the user cannot control."""
 import pygame
 pygame.init()
 WIDTH, HEIGHT = 500, 600
